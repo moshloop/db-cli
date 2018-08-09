@@ -30,5 +30,13 @@
   name = "github.com/denisenkom/go-mssqldb"
 
 [[constraint]]
+  name = "github.com/go-sql-driver/mysql"
+  version = "1.4.0"
+
+[[constraint]]
   branch = "master"
   name = "github.com/jmoiron/sqlx"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/lib/pq"
