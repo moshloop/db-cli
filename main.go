@@ -1,20 +1,20 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
+	"net/url"
+	"os"
+	"strings"
+
 	_ "github.com/denisenkom/go-mssqldb"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	//_ "gopkg.in/goracle.v2"
-	"net/url"
-	"os"
-	"strings"
-	"github.com/jmoiron/sqlx"
-	"io/ioutil"
 	"github.com/Jeffail/gabs"
-
-	"encoding/json"
+	"github.com/jmoiron/sqlx"
 )
 
 var (
@@ -47,8 +47,8 @@ func main() {
 
 	flag.BoolVar(&version, "version", false, "show version")
 	flag.StringVar(&conn, "url", "", "Database connection URL")
-	flag.StringVar(&user, "user", "", "Database username")
-	flag.StringVar(&pass, "pass", "", "Database password")
+	flag.StringVar(&user, "user", os.Getenv("username"), "Database username, can be specified as `username` env variable")
+	flag.StringVar(&pass, "pass", os.Getenv("password"), "Database password, can be specified as `password` env variable")
 	flag.StringVar(&driver, "driver", "mssql", "Database driver name, e.g. mssql, mysql, postgres ")
 	flag.StringVar(&sql, "sql", "", "SQL Command to run")
 	flag.StringVar(&file, "file", "", "JSON array to insert into a table")
@@ -124,14 +124,14 @@ func main() {
 		data, _ := ioutil.ReadFile(file)
 		json, _ := gabs.ParseJSON(data)
 		children, _ := json.Children()
-		for _, child := range (children) {
+		for _, child := range children {
 			row, _ := child.ChildrenMap()
 
 			columns := ""
 			values := ""
 			var arr []interface{}
 
-			for k := range (row) {
+			for k := range row {
 				if len(columns) > 0 {
 					columns += ","
 					values += ","
